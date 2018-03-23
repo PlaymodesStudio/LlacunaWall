@@ -40,27 +40,30 @@ void squareWall::draw(int x, int y){
 void squareWall::createRectangle(){
     int notFoundAccumulate = 0;
     while(notFoundAccumulate < density){
-        float margin = moduleSize + ofRandom((1-borderAlign) * moduleSize);
-        float x = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 2, (width/moduleSize) - 2 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * moduleSize;
-        float y = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 2, (height/moduleSize)- 2 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * moduleSize;
+        float margin = moduleSize + spacing;
+        float x = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 2, (width/margin) - 2 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
+        float y = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 2, (height/margin)- 2 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
         float m_width = moduleSize;
         float m_height = moduleSize;
         if(ofRandom(1) < bigModuleProbability){
+            vector<int> sizes;
+            sizes = {3, 5};
+            ofRandomize(sizes);
             if(ofRandom(1) < .5){
-                m_width = moduleSize * bigModuleNumReplicate;
-                x = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 3, (width/moduleSize) - 3 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * moduleSize;
+                m_width = moduleSize * sizes[0];
+                x = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 3, (width/margin) - 3 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
                 if(x < width/2){
-                    x = x + (moduleSize /2);
+                    x = x + (floor(sizes[0]/2) * moduleSize);
                 }else{
-                    x = x - (moduleSize /2);
+                    x = x - (floor(sizes[0]/2) * moduleSize);
                 }
             }else{
-                m_height = moduleSize * bigModuleNumReplicate;
-                y = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 3, (height/moduleSize)- 3 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * moduleSize;
+                m_height = moduleSize * sizes[0];
+                y = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 3, (height/margin)- 3 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
                 if(y < height/2){
-                    y = y + (moduleSize /2);
+                    y = y + (floor(sizes[0]/2) * moduleSize);
                 }else{
-                    y = y - (moduleSize /2);
+                    y = y - (floor(sizes[0]/2) * moduleSize);
                 }
             }
         }
