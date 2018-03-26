@@ -10,7 +10,7 @@
 #include <random>
 
 squareWall::squareWall(int _width, int _height) : width(_width), height(_height){
-    font.load(OF_TTF_SANS, 10, true);
+    font.load(OF_TTF_SANS, 10, true, true, true, true);
 }
 
 void squareWall::computeNewWall(){
@@ -101,15 +101,30 @@ void squareWall::save(string path, int _id){
         eps.rect(module.x, module.y, module.width, module.height);
     }
     
+    int modulesSize1 = 0;
+    int modulesSize3 = 0;
+    int modulesSize5 = 0;
+    for (auto module : modules) {
+        int m_widht = module.getWidth();
+        int m_height = module.getHeight();
+        if(m_widht == moduleSize || m_height == moduleSize) modulesSize1++;
+        if(m_widht == 3*moduleSize || m_height == 3*moduleSize) modulesSize3++;
+        if(m_widht == 5*moduleSize || m_height == 5*moduleSize) modulesSize5++;
+    }
+    
     eps.beginShape();
-    for(auto path : font.getStringAsPoints("Test")){
-        for(auto polyline : path.getOutline()){
-            for(auto vertex : polyline.getVertices()){
-                eps.polyVertex(vertex.x, vertex.y);
+    vector<ofPath> paths = font.getStringAsPoints("Total-> " + ofToString(modules.size()) + "  -  Size 1-> " + ofToString(modulesSize1) +"  -  Size 3-> " + ofToString(modulesSize3) + "   -   Size 5-> " + ofToString(modulesSize5));
+    for(auto &pathh : paths){
+        eps.beginShape();
+        for(auto &vertex : pathh.getCommands()){
+            if(vertex.type == ofPath::Command::close){
+                eps.polyVertex(pathh.getCommands()[0].to.x + 15, pathh.getCommands()[0].to.y + 15);
+            }else{
+                eps.polyVertex(vertex.to.x + 15, vertex.to.y + 15);
             }
         }
+        eps.endShape();
     }
-    eps.endShape();
     
     eps.endEPS();
 }

@@ -29,7 +29,8 @@ class ofApp : public ofBaseApp{
     ofParameter<int>    bigModuleNumReplicate;
     ofParameter<float>  spacing;
     ofParameter<float>  bigModuleProbability;
-    ofParameter<int>  density;
+    ofParameter<float>  bigModuleOrientation;
+    ofParameter<float>  density;
     ofParameter<float>  borderAlign;
     ofParameter<void>   button;
     
