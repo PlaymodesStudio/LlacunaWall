@@ -9,6 +9,7 @@
 #define squareWall_h
 
 #include "ofMain.h"
+#include "ofxVectorGraphics.h"
 
 class squareWall{
 public:
@@ -17,6 +18,8 @@ public:
     
     void computeNewWall();
     void draw(int x, int y);
+    
+    void save(string path, int _id);
     
     void createRectangle();
     
@@ -30,6 +33,8 @@ public:
     int width, height;
     
     vector<ofRectangle> modules;
+    
+    ofxVectorGraphics eps;
 };
 
 #endif /* squareWall_h */

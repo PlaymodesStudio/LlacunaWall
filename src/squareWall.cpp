@@ -93,3 +93,16 @@ void squareWall::createRectangle(){
 //        return;
 //    }
 }
+
+void squareWall::save(string path, int _id){
+    string filename = path + "/wall"+ofToString(_id) + "_" + ofGetTimestampString() +".ps";
+    ofFile file;
+    if(file.open(filename)){
+        file.create(filename);
+    }
+    eps.beginEPS(filename, 0, 0, width, height);
+    for(auto module : modules){
+        eps.rect(module.x, module.y, module.width, module.height);
+    }
+    eps.endEPS();
+}
