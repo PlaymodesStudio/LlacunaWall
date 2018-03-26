@@ -7,14 +7,18 @@
 
 #include "squareWall.h"
 #include "ofMath.h"
+#include <random>
 
 squareWall::squareWall(int _width, int _height) : width(_width), height(_height){
-
+    font.load(OF_TTF_SANS, 10, true);
 }
 
 void squareWall::computeNewWall(){
     modules.clear();
     createRectangle();
+    colors.clear();
+    colors.resize(modules.size());
+    for(auto &col: colors) col = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 }
 
 void squareWall::draw(int x, int y){
@@ -25,73 +29,65 @@ void squareWall::draw(int x, int y){
     ofSetColor(255);
     ofDrawRectangle(0, 0, width, height);
     ofPopMatrix();
-    for(auto module : modules){
+    for(int i = 0; i < modules.size(); i++){
         ofPushMatrix();
-        ofTranslate(module.x + x, module.y + y);
+        ofTranslate(modules[i].x + x, modules[i].y + y);
         ofScale(1, 1);
-//        ofSetRectMode(OF_RECTMODE_CENTER);
-        ofSetColor(255, 0, 0);
-        ofDrawRectangle(0, 0, module.width, module.height);
+//        ofSetColor(colors[i]);
+        ofSetColor(0);
+        ofDrawRectangle(0, 0, modules[i].width, modules[i].height);
         ofPopMatrix();
     }
     ofPopStyle();
 }
 
 void squareWall::createRectangle(){
-    int notFoundAccumulate = 0;
-    while(notFoundAccumulate < density){
-        float margin = moduleSize + spacing;
-        float x = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 2, (width/margin) - 2 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
-        float y = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 2, (height/margin)- 2 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
-        float m_width = moduleSize;
-        float m_height = moduleSize;
-        if(ofRandom(1) < bigModuleProbability){
-            vector<int> sizes;
-            sizes = {3, 5};
-            ofRandomize(sizes);
-            if(ofRandom(1) < .5){
-                m_width = moduleSize * sizes[0];
-                x = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 3, (width/margin) - 3 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
-                if(x < width/2){
-                    x = x + (floor(sizes[0]/2) * moduleSize);
-                }else{
-                    x = x - (floor(sizes[0]/2) * moduleSize);
-                }
+    float margin = moduleSize + spacing;
+    float gridSize = moduleSize + spacing;
+    int i = 0;
+    int j = 0;
+    for(float x = moduleSize; x < width-margin; x = x+gridSize){
+        for(float y = moduleSize; y < height-margin; y = y+gridSize){
+            ofRectangle possibleModule;
+            bool createdRect = false;
+            if(bigProbabilityMap.isAllocated()){
+                int textureX = ((float)(x+(moduleSize/2)) / (float)width) * bigProbabilityMap.getWidth();
+                int textureY = ((float)(y+(moduleSize/2)) / (float)height) * bigProbabilityMap.getHeight();
+                float itemBigProb = ofClamp(bigProbabilityMap.getColor(textureX, textureY).getBrightness()/255, 0.001, 0.999);
+                randomizeSizeAndOrientation(itemBigProb * bigModuleProbability, bigModuleOrientation);
             }else{
-                m_height = moduleSize * sizes[0];
-                y = int(ofRandom((pow(ofRandom(1-borderAlign), 0.3)*16) + 3, (height/margin)- 3 - (pow(ofRandom(1-borderAlign), 0.3)*8))) * margin;
-                if(y < height/2){
-                    y = y + (floor(sizes[0]/2) * moduleSize);
-                }else{
-                    y = y - (floor(sizes[0]/2) * moduleSize);
+                randomizeSizeAndOrientation(bigModuleProbability, bigModuleOrientation);
+            }
+            for(auto chooseSize: orderedSizes){
+                for(auto orientation : orderedOrientations){
+                    glm::vec2 size = glm::vec2(moduleSize, moduleSize) + (abs(orientation) * (chooseSize-1) * moduleSize);
+                    possibleModule.setFromCenter(x+(orientation.x*floor(chooseSize/2)*moduleSize)+(moduleSize/2), y+(orientation.y*floor(chooseSize/2)*moduleSize)+(moduleSize/2), size.x, size.y);
+                    if(checkCanBeRecatngle(possibleModule)){
+                        createdRect = true;
+                        break;
+                    }
+                }
+                if(createdRect){
+                    break;
                 }
             }
-        }
-        ofRectangle possibleModule;
-        possibleModule.setFromCenter(x, y, m_width, m_height);
-        ofRectangle possibleModuleWithMargins;
-        possibleModuleWithMargins.setFromCenter(x, y, m_width+spacing, m_height+spacing);
-        bool canBeConstructed = true;
-        for(auto module : modules){
-            ofRectangle rect;
-            rect.setFromCenter(module.getCenter().x, module.getCenter().y, module.width+spacing, module.height+spacing);
-            if(possibleModuleWithMargins.intersects(rect)){
-                canBeConstructed = false;
-                break;
+            if(createdRect){
+                if(probabilityMap.isAllocated()){
+                    int textureX = ((float)possibleModule.getCenter().x / (float)width) * probabilityMap.getWidth();
+                    int textureY = ((float)possibleModule.getCenter().y / (float)height) * probabilityMap.getHeight();
+                    if(ofRandom(1) < density*(probabilityMap.getColor(textureX, textureY).getBrightness()/255)){
+                        modules.push_back(possibleModule);
+                    }
+                }else{
+                    if(ofRandom(1) < density){
+                        modules.push_back(possibleModule);
+                    }
+                }
             }
+            j++;
         }
-        if(canBeConstructed){
-            modules.push_back(possibleModule);
-            notFoundAccumulate = 0;
-        }else{
-            notFoundAccumulate++;
-        }
+        i++;
     }
-//    if(modules.size() < density){
-//        createRectangle();
-//    }else{
-//        return;
-//    }
 }
 
 void squareWall::save(string path, int _id){
@@ -104,5 +100,75 @@ void squareWall::save(string path, int _id){
     for(auto module : modules){
         eps.rect(module.x, module.y, module.width, module.height);
     }
+    
+    eps.beginShape();
+    for(auto path : font.getStringAsPoints("Test")){
+        for(auto polyline : path.getOutline()){
+            for(auto vertex : polyline.getVertices()){
+                eps.polyVertex(vertex.x, vertex.y);
+            }
+        }
+    }
+    eps.endShape();
+    
     eps.endEPS();
+}
+
+void squareWall::textureChanged(){
+//    ofPixels pix;
+//    mask.readToPixels(pix);
+//
+//    float margin = moduleSize + spacing;
+//    xRetalls.clear();
+//    yRetalls.clear();
+//    xRetalls.resize(width/margin);
+//    yRetalls.resize(height/margin);
+}
+
+bool squareWall::checkCanBeRecatngle(ofRectangle rect){
+    ofRectangle margins(moduleSize*2, moduleSize*2, width-(moduleSize*4), height - (moduleSize*4));
+    if(!margins.inside(rect)){
+        return false;
+    }
+    ofRectangle possibleModuleWithMargins;
+    possibleModuleWithMargins.setFromCenter(rect.getCenter().x, rect.getCenter().y, rect.width+(spacing*2), rect.height+(spacing*2));
+    for(auto module : modules){
+        if(module.intersects(rect)){
+            return false;
+        }
+    }
+    return true;
+}
+
+void squareWall::randomizeSizeAndOrientation(float bigProbability, float orientationParam){
+    orderedOrientations.clear();
+    vector<glm::vec2> orientations{glm::vec2(1, 0), glm::vec2(0, 1), glm::vec2(-1, 0), glm::vec2(0, -1)};
+    vector<bool> selectedOrientations{0,0,0,0};
+    vector<float> weights{orientationParam, 1-orientationParam, orientationParam, 1-orientationParam};
+    discrete_distribution<float> orderDist(weights.begin(), weights.end());
+    std::mt19937 gen;
+    gen.seed(ofGetElapsedTimeMicros());
+    while(orientations.size() != orderedOrientations.size()){
+        int chooseIndex = orderDist(gen);
+        if(selectedOrientations[chooseIndex] == 0){
+            glm::vec2 &choosenOrient = orientations[chooseIndex];
+            selectedOrientations[chooseIndex] = 1;
+            orderedOrientations.push_back(choosenOrient);
+        }
+    }
+    
+    orderedSizes.clear();
+    vector<int> sizes{1, 3, 5};
+     vector<bool> selectedSizes{0,0,0,0};
+    vector<float> sizeWigths{1-bigProbability, bigProbability/2, bigProbability/2};
+    discrete_distribution<float> sizesDist(sizeWigths.begin(), sizeWigths.end());
+    vector<float> sizesWeights{bigModuleOrientation, 1-bigModuleOrientation, bigModuleOrientation, 1-bigModuleOrientation};
+    while(sizes.size() != orderedSizes.size()){
+        int chooseIndex = sizesDist(gen);
+        if(selectedSizes[chooseIndex] == 0){
+            int choosenSize = sizes[chooseIndex];
+            selectedSizes[chooseIndex] = 1;
+            orderedSizes.push_back(choosenSize);
+        }
+    }
 }

@@ -22,6 +22,10 @@ public:
     void save(string path, int _id);
     
     void createRectangle();
+    void textureChanged();
+    bool checkCanBeRecatngle(ofRectangle rect);
+    
+    void randomizeSizeAndOrientation(float bigProbability, float orientationParam);
     
     float moduleSize;
     int    bigModuleNumReplicate;
@@ -29,12 +33,23 @@ public:
     float  bigModuleProbability;
     float  density;
     float  borderAlign;
+    float  bigModuleOrientation;
+
     
     int width, height;
     
     vector<ofRectangle> modules;
+    vector<ofColor> colors;
     
+    ofImage probabilityMap;
+    ofImage bigProbabilityMap;
+    
+    vector<glm::vec2> orderedOrientations;
+    vector<int> orderedSizes;
+
     ofxVectorGraphics eps;
+    
+    ofTrueTypeFont font;
 };
 
 #endif /* squareWall_h */

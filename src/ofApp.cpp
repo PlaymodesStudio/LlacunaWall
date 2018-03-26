@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include <random>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -19,7 +20,10 @@ void ofApp::setup(){
     eventListeners.push_back(bigModuleProbability.newListener([&](float &f){
         for(auto &wall : walls) wall.bigModuleProbability = f;
     }));
-    eventListeners.push_back(density.newListener([&](int &f){
+    eventListeners.push_back(bigModuleOrientation.newListener([&](float &f){
+        for(auto &wall : walls) wall.bigModuleOrientation = f;
+    }));
+    eventListeners.push_back(density.newListener([&](float &f){
         for(auto &wall : walls) wall.density = f;
     }));
     eventListeners.push_back(borderAlign.newListener([&](float &f){
@@ -32,8 +36,9 @@ void ofApp::setup(){
     parameters.add(moduleSize.set("Module Size", 7, 1, 20));
     parameters.add(bigModuleNumReplicate.set("Big Module x", 2, 2, 5));
     parameters.add(spacing.set("Spacing", 7, 0, 20));
-    parameters.add(bigModuleProbability.set("Big Probability", 0.2, 0, 1));
-    parameters.add(density.set("Density", 100, 5, 10000));
+    parameters.add(bigModuleProbability.set("Big Probability", 0.2, 0.001, .999));
+    parameters.add(bigModuleOrientation.set("Big orient H - V", 0.5, .001, .999));
+    parameters.add(density.set("Density", 0.5, 0, 1));
     parameters.add(borderAlign.set("Border Align", 0.5, 0, 1));
     parameters.add(button.set("Trigger"));
     
@@ -120,5 +125,14 @@ void ofApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
+    if(dragInfo.files.size() == 1){
+        if(ofStringTimesInString(dragInfo.files[0], "big") > 0){
+            for(auto &wall : walls) wall.bigProbabilityMap.load(dragInfo.files[0]);
+        }else{
+            for(auto &wall : walls) wall.probabilityMap.load(dragInfo.files[0]);
+        }
+    }
+    else if(dragInfo.files.size() == 3){
+        for(int i = 0; i < walls.size(); i++) walls[i].probabilityMap.load(dragInfo.files[i]);
+    }
 }
