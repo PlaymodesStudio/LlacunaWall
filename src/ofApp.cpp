@@ -93,9 +93,27 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     gui.draw();
-    walls[0].draw();
-//    walls[1].draw(ofGetWidth() - 510, 520);
-//    walls[2].draw(10, 520);
+    int guiRightPoint = gui.getPosition().x + gui.getWidth();
+    walls[0].draw(ofRectangle(guiRightPoint, 0, ofGetWidth()-guiRightPoint, ofGetHeight()));
+    int margin = 40;
+    int probabilityMapDrawY = gui.getPosition().y + gui.getHeight() + margin;
+    int textureHeight = (float)walls[0].height/(float)walls[0].width * (float)gui.getWidth();
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(255);
+    ofSetLineWidth(1);
+    if(walls[0].probabilityMap.isAllocated()){
+        ofDrawBitmapString("Probability Map", gui.getPosition().x, probabilityMapDrawY - 5);
+        ofDrawRectangle(gui.getPosition().x-1, probabilityMapDrawY, gui.getWidth()+1, textureHeight+1);
+        walls[0].probabilityMap.draw(gui.getPosition().x, probabilityMapDrawY, gui.getWidth(), textureHeight);
+    }
+    probabilityMapDrawY += textureHeight + margin;
+    if(walls[0].bigProbabilityMap.isAllocated()){
+        ofDrawBitmapString("Big Probability Map", gui.getPosition().x, probabilityMapDrawY - 5);
+        ofDrawRectangle(gui.getPosition().x-1, probabilityMapDrawY, gui.getWidth()+1, textureHeight+1);
+        walls[0].bigProbabilityMap.draw(gui.getPosition().x, probabilityMapDrawY, gui.getWidth(), textureHeight);
+    }
+    ofPopStyle();
 }
 
 //--------------------------------------------------------------

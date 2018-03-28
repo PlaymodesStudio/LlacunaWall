@@ -21,16 +21,16 @@ void squareWall::computeNewWall(){
     for(auto &col: colors) col = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 }
 
-void squareWall::draw(){
+void squareWall::draw(ofRectangle drawRect){
     int margin = 20;
     ofPushStyle();
     ofPushMatrix();
-    ofTranslate(margin, margin);
+    ofTranslate(margin + drawRect.x, margin + drawRect.y);
     int scale = 1;
-    if(width > (ofGetWidth() - (margin*2))){
-        while((width * scale/2) < (ofGetWidth() - (margin*2))) scale = scale/2;
+    if(width > (drawRect.getWidth() - (margin*2))){
+        while((width * scale/2) < (drawRect.getWidth() - (margin*2))) scale = scale/2;
     }else{
-        while((width * scale*2) < (ofGetWidth() - (margin*2))) scale = scale*2;
+        while((width * scale*2) < (drawRect.getWidth() - (margin*2))) scale = scale*2;
     }
     ofScale(scale, scale);
     ofSetColor(255);
@@ -48,16 +48,16 @@ void squareWall::draw(){
         bigProbabilityMap.draw(0,0, width, height);
     }
     ofDisableBlendMode();
-    ofPopMatrix();
+//    ofPopMatrix();
     for(int i = 0; i < modules.size(); i++){
-        ofPushMatrix();
-        ofTranslate(margin, margin);
-        ofScale(scale, scale);
+//        ofPushMatrix();
+//        ofTranslate(margin, margin);
+//        ofScale(scale, scale);
 //        ofSetColor(colors[i]);
         ofSetColor(255);
         ofDrawRectangle(modules[i].x, modules[i].y, modules[i].width, modules[i].height);
-        ofPopMatrix();
     }
+    ofPopMatrix();
     ofPopStyle();
 }
 

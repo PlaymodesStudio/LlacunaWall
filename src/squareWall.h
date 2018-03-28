@@ -17,7 +17,7 @@ public:
     ~squareWall(){};
     
     void computeNewWall();
-    void draw();
+    void draw(ofRectangle drawRect);
     
     void save(string path, int _id);
     
