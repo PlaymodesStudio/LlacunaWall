@@ -19,7 +19,7 @@ public:
     void computeNewWall();
     void draw(ofRectangle drawRect);
     
-    void save(string path, int _id);
+    void save(string filename);
     
     void createRectangle();
     void textureChanged();

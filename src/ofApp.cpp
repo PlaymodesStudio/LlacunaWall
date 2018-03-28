@@ -17,10 +17,9 @@ void ofApp::setup(){
     parameters.add(applyBigProbMap.set("Apply Big Prob Map", true));
     parameters.add(drawProbMap.set("Draw Prob Map", false));
     parameters.add(drawBigProbMap.set("Draw Big Prob Map", false));
-    parameters.add(button.set("Press or ' ' to new layout"));
-    parameters.add(saveTrigger.set("Press or 's' to save Presset"));
+    parameters.add(button.set("New layout (space)"));
+    parameters.add(saveTrigger.set("Save Presset ('s')"));
 
-    
     for(auto &wall : walls) wall.moduleSize = moduleSize;
     for(auto &wall : walls) wall.bigModuleProbability = bigModuleProbability;
     for(auto &wall : walls) wall.bigModuleOrientation = bigModuleOrientation;
@@ -33,7 +32,6 @@ void ofApp::setup(){
         for(auto &wall : walls) wall.width = v.x;
         for(auto &wall : walls) wall.height = v.y;
         for(auto &wall : walls) wall.computeNewWall();
-
     }));
     
     eventListeners.push_back(moduleSize.newListener([&](float &f){
@@ -82,6 +80,9 @@ void ofApp::setup(){
     drawBigProbMap = drawBigProbMap;
     
     gui.setup(parameters);
+    
+    parameters.add(probabilityMapString.set("ProbabilityMap", " "));
+    parameters.add(bigProbabilityMapString.set("BigProbabilityMap", " "));
 }
 
 //--------------------------------------------------------------
@@ -120,7 +121,11 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key == 's'){
         for(int i = 0; i < walls.size(); i++){
-            walls[i].save("walls", i);
+            string timestamp = ofGetTimestampString();
+            walls[i].save("Render/wall_" + timestamp +".ps");
+            ofJson json;
+            ofSerialize(json, parameters);
+            ofSavePrettyJson("Parameters/params_" + timestamp + ".json", json);
         }
     }else if(key == ' '){
         for(auto &wall : walls) wall.computeNewWall();
@@ -175,10 +180,20 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
     for(auto file : dragInfo.files){
-        if(ofStringTimesInString(file, "big") > 0){
-            for(auto &wall : walls) wall.bigProbabilityMap.load(file);
-        }else{
-            for(auto &wall : walls) wall.probabilityMap.load(file);
+        if(ofToLower(ofFilePath::getFileExt(file)) == "png"){
+            if(ofStringTimesInString(file, "big") > 0){
+                for(auto &wall : walls) wall.bigProbabilityMap.load(file);
+                bigProbabilityMapString = file;
+            }else{
+                for(auto &wall : walls) wall.probabilityMap.load(file);
+                probabilityMapString = file;
+            }
+        }else if(ofToLower(ofFilePath::getFileExt(file)) == "json"){
+            ofFile jsonFile(file);
+            ofJson json = ofLoadJson(jsonFile);
+            ofDeserialize(json, parameters);
+            for(auto &wall : walls) wall.bigProbabilityMap.load(bigProbabilityMapString.get());
+            for(auto &wall : walls) wall.probabilityMap.load(probabilityMapString.get());
         }
     }
     for(auto &wall : walls) wall.computeNewWall();

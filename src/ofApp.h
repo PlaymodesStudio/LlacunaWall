@@ -40,6 +40,9 @@ class ofApp : public ofBaseApp{
     ofParameter<void>   button;
     ofParameter<void>   saveTrigger;
     
+    ofParameter<string> probabilityMapString;
+    ofParameter<string> bigProbabilityMapString;
+    
     vector<ofEventListener> eventListeners;
     
     vector<squareWall> walls;

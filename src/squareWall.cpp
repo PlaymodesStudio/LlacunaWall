@@ -110,8 +110,7 @@ void squareWall::createRectangle(){
     }
 }
 
-void squareWall::save(string path, int _id){
-    string filename = path + "/wall"+ofToString(_id) + "_" + ofGetTimestampString() +".ps";
+void squareWall::save(string filename){
     ofFile file;
     if(file.open(filename)){
         file.create(filename);
