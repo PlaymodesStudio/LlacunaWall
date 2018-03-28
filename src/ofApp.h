@@ -25,6 +25,7 @@ class ofApp : public ofBaseApp{
     
     ofxPanel gui;
     ofParameterGroup parameters;
+    ofParameter<glm::vec2>    wallSize;
     ofParameter<float> moduleSize;
     ofParameter<int>    bigModuleNumReplicate;
     ofParameter<float>  spacing;
@@ -37,6 +38,7 @@ class ofApp : public ofBaseApp{
     ofParameter<bool>   drawProbMap;
     ofParameter<bool>   drawBigProbMap;
     ofParameter<void>   button;
+    ofParameter<void>   saveTrigger;
     
     vector<ofEventListener> eventListeners;
     

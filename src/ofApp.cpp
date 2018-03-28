@@ -5,18 +5,21 @@
 void ofApp::setup(){
     
     walls.push_back(move(squareWall(500, 330)));
-    walls.push_back(move(squareWall(500, 330)));
-    walls.push_back(move(squareWall(600, 330)));
+//    walls.push_back(move(squareWall(500, 330)));
+//    walls.push_back(move(squareWall(600, 330)));
     
+    parameters.add(wallSize.set("WallSize", glm::vec2(500,330), glm::vec2(100,100), glm::vec2(1000,1000)));
     parameters.add(moduleSize.set("Module Size", 7, 1, 20));
     parameters.add(bigModuleProbability.set("Big Probability", 0.2, 0.001, .999));
     parameters.add(bigModuleOrientation.set("Big orient H - V", 0.5, .001, .999));
     parameters.add(density.set("Density", 0.5, 0, 1));
-    parameters.add(button.set("Trigger"));
     parameters.add(applyProbMap.set("Apply Prob Map", true));
     parameters.add(applyBigProbMap.set("Apply Big Prob Map", true));
     parameters.add(drawProbMap.set("Draw Prob Map", false));
     parameters.add(drawBigProbMap.set("Draw Big Prob Map", false));
+    parameters.add(button.set("Press or ' ' to new layout"));
+    parameters.add(saveTrigger.set("Press or 's' to save Presset"));
+
     
     for(auto &wall : walls) wall.moduleSize = moduleSize;
     for(auto &wall : walls) wall.bigModuleProbability = bigModuleProbability;
@@ -26,6 +29,12 @@ void ofApp::setup(){
     for(auto &wall : walls) wall.applyBigProbMap = applyBigProbMap;
 
     
+    eventListeners.push_back(wallSize.newListener([&](glm::vec2 &v){
+        for(auto &wall : walls) wall.width = v.x;
+        for(auto &wall : walls) wall.height = v.y;
+        for(auto &wall : walls) wall.computeNewWall();
+
+    }));
     
     eventListeners.push_back(moduleSize.newListener([&](float &f){
         for(auto &wall : walls) wall.moduleSize = f;
@@ -84,9 +93,9 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     gui.draw();
-    walls[0].draw(ofGetWidth() - 510, 10);
-    walls[1].draw(ofGetWidth() - 510, 520);
-    walls[2].draw(10, 520);
+    walls[0].draw();
+//    walls[1].draw(ofGetWidth() - 510, 520);
+//    walls[2].draw(10, 520);
 }
 
 //--------------------------------------------------------------

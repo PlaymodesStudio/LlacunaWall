@@ -21,11 +21,18 @@ void squareWall::computeNewWall(){
     for(auto &col: colors) col = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 }
 
-void squareWall::draw(int x, int y){
+void squareWall::draw(){
+    int margin = 20;
     ofPushStyle();
     ofPushMatrix();
-    ofTranslate(x, y);
-    ofScale(1, 1);
+    ofTranslate(margin, margin);
+    int scale = 1;
+    if(width > (ofGetWidth() - (margin*2))){
+        while((width * scale/2) < (ofGetWidth() - (margin*2))) scale = scale/2;
+    }else{
+        while((width * scale*2) < (ofGetWidth() - (margin*2))) scale = scale*2;
+    }
+    ofScale(scale, scale);
     ofSetColor(255);
     ofNoFill();
     ofSetLineWidth(2);
@@ -44,11 +51,11 @@ void squareWall::draw(int x, int y){
     ofPopMatrix();
     for(int i = 0; i < modules.size(); i++){
         ofPushMatrix();
-        ofTranslate(modules[i].x + x, modules[i].y + y);
-        ofScale(1, 1);
+        ofTranslate(margin, margin);
+        ofScale(scale, scale);
 //        ofSetColor(colors[i]);
         ofSetColor(255);
-        ofDrawRectangle(0, 0, modules[i].width, modules[i].height);
+        ofDrawRectangle(modules[i].x, modules[i].y, modules[i].width, modules[i].height);
         ofPopMatrix();
     }
     ofPopStyle();

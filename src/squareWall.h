@@ -17,7 +17,7 @@ public:
     ~squareWall(){};
     
     void computeNewWall();
-    void draw(int x, int y);
+    void draw();
     
     void save(string path, int _id);
     
