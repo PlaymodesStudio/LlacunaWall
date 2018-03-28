@@ -28,6 +28,14 @@ void squareWall::draw(int x, int y){
     ofScale(1, 1);
     ofSetColor(255);
     ofDrawRectangle(0, 0, width, height);
+    if(probabilityMap.isAllocated() && drawProbMap){
+        ofSetColor(255, 127, 127, 127);
+        probabilityMap.draw(0,0, width, height);
+    }
+    if(bigProbabilityMap.isAllocated() && drawBigProbMap){
+        ofSetColor(127, 127, 255, 127);
+        bigProbabilityMap.draw(0,0, width, height);
+    }
     ofPopMatrix();
     for(int i = 0; i < modules.size(); i++){
         ofPushMatrix();
