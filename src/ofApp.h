@@ -32,6 +32,10 @@ class ofApp : public ofBaseApp{
     ofParameter<float>  bigModuleOrientation;
     ofParameter<float>  density;
     ofParameter<float>  borderAlign;
+    ofParameter<bool>   applyProbMap;
+    ofParameter<bool>   applyBigProbMap;
+    ofParameter<bool>   drawProbMap;
+    ofParameter<bool>   drawBigProbMap;
     ofParameter<void>   button;
     
     vector<ofEventListener> eventListeners;

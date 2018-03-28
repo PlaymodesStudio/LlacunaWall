@@ -34,6 +34,10 @@ public:
     float  density;
     float  borderAlign;
     float  bigModuleOrientation;
+    bool   applyProbMap;
+    bool   applyBigProbMap;
+    bool   drawProbMap;
+    bool   drawBigProbMap;
 
     
     int width, height;

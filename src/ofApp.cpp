@@ -29,6 +29,19 @@ void ofApp::setup(){
     eventListeners.push_back(borderAlign.newListener([&](float &f){
         for(auto &wall : walls) wall.borderAlign = f;
     }));
+    eventListeners.push_back(applyProbMap.newListener([&](bool &b){
+        for(auto &wall : walls) wall.applyProbMap = b;
+    }));
+    eventListeners.push_back(applyBigProbMap.newListener([&](bool &b){
+        for(auto &wall : walls) wall.applyBigProbMap = b;
+    }));
+    eventListeners.push_back(drawProbMap.newListener([&](bool &b){
+        for(auto &wall : walls) wall.drawProbMap = b;
+    }));
+    eventListeners.push_back(drawBigProbMap.newListener([&](bool &b){
+        for(auto &wall : walls) wall.drawBigProbMap = b;
+    }));
+    
     eventListeners.push_back(button.newListener([&](){
         for(auto &wall : walls) wall.computeNewWall();
     }));
@@ -41,6 +54,11 @@ void ofApp::setup(){
     parameters.add(density.set("Density", 0.5, 0, 1));
     parameters.add(borderAlign.set("Border Align", 0.5, 0, 1));
     parameters.add(button.set("Trigger"));
+    parameters.add(applyProbMap.set("Apply Prob Map", true));
+    parameters.add(applyBigProbMap.set("Apply Big Prob Map", true));
+    parameters.add(drawProbMap.set("Draw Prob Map", false));
+    parameters.add(drawBigProbMap.set("Draw Big Prob Map", false));
+    
     
     moduleSize = moduleSize;
     bigModuleNumReplicate = bigModuleNumReplicate;
@@ -75,6 +93,8 @@ void ofApp::keyPressed(int key){
         for(int i = 0; i < walls.size(); i++){
             walls[i].save("walls", i);
         }
+    }else if(key == ' '){
+        for(auto &wall : walls) wall.computeNewWall();
     }
 }
 
@@ -132,7 +152,5 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
             for(auto &wall : walls) wall.probabilityMap.load(dragInfo.files[0]);
         }
     }
-    else if(dragInfo.files.size() == 3){
-        for(int i = 0; i < walls.size(); i++) walls[i].probabilityMap.load(dragInfo.files[i]);
-    }
+    for(auto &wall : walls) wall.computeNewWall();
 }

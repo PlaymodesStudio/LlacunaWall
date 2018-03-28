@@ -50,7 +50,7 @@ void squareWall::createRectangle(){
         for(float y = moduleSize; y < height-margin; y = y+gridSize){
             ofRectangle possibleModule;
             bool createdRect = false;
-            if(bigProbabilityMap.isAllocated()){
+            if(bigProbabilityMap.isAllocated() && applyBigProbMap){
                 int textureX = ((float)(x+(moduleSize/2)) / (float)width) * bigProbabilityMap.getWidth();
                 int textureY = ((float)(y+(moduleSize/2)) / (float)height) * bigProbabilityMap.getHeight();
                 float itemBigProb = ofClamp(bigProbabilityMap.getColor(textureX, textureY).getBrightness()/255, 0.001, 0.999);
@@ -72,7 +72,7 @@ void squareWall::createRectangle(){
                 }
             }
             if(createdRect){
-                if(probabilityMap.isAllocated()){
+                if(probabilityMap.isAllocated() && applyProbMap){
                     int textureX = ((float)possibleModule.getCenter().x / (float)width) * probabilityMap.getWidth();
                     int textureY = ((float)possibleModule.getCenter().y / (float)height) * probabilityMap.getHeight();
                     if(ofRandom(1) < density*(probabilityMap.getColor(textureX, textureY).getBrightness()/255)){
