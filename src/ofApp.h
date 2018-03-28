@@ -28,7 +28,7 @@ class ofApp : public ofBaseApp{
     ofParameter<glm::vec2>    wallSize;
     ofParameter<float> moduleSize;
     ofParameter<int>    bigModuleNumReplicate;
-    ofParameter<float>  spacing;
+    ofParameter<glm::vec2> offset;
     ofParameter<float>  bigModuleProbability;
     ofParameter<float>  bigModuleOrientation;
     ofParameter<float>  density;
@@ -39,6 +39,7 @@ class ofApp : public ofBaseApp{
     ofParameter<bool>   drawBigProbMap;
     ofParameter<void>   button;
     ofParameter<void>   saveTrigger;
+    ofParameter<void>   randomizeParams;
     
     ofParameter<string> probabilityMapString;
     ofParameter<string> bigProbabilityMapString;

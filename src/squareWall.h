@@ -38,6 +38,8 @@ public:
     bool   applyBigProbMap;
     bool   drawProbMap;
     bool   drawBigProbMap;
+    
+    glm::vec2 offset;
 
     
     int width, height;

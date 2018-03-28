@@ -66,8 +66,8 @@ void squareWall::createRectangle(){
     float gridSize = moduleSize * 2;
     int i = 0;
     int j = 0;
-    for(float x = moduleSize; x < width-margin; x = x+gridSize){
-        for(float y = moduleSize; y < height-margin; y = y+gridSize){
+    for(float x = moduleSize + offset.x; x < width-margin; x = x+gridSize){
+        for(float y = moduleSize + offset.y; y < height-margin; y = y+gridSize){
             ofRectangle possibleModule;
             bool createdRect = false;
             if(bigProbabilityMap.isAllocated() && applyBigProbMap){
@@ -160,7 +160,7 @@ void squareWall::textureChanged(){
 }
 
 bool squareWall::checkCanBeRecatngle(ofRectangle rect){
-    ofRectangle margins(moduleSize*2, moduleSize*2, width-(moduleSize*4), height - (moduleSize*4));
+    ofRectangle margins(moduleSize*2 + offset.x, moduleSize*2 + offset.y, width-(moduleSize*4), height - (moduleSize*4));
     if(!margins.inside(rect)){
         return false;
     }

@@ -8,7 +8,9 @@ void ofApp::setup(){
 //    walls.push_back(move(squareWall(500, 330)));
 //    walls.push_back(move(squareWall(600, 330)));
     
+    parameters.add(randomizeParams.set("Randomize Params"));
     parameters.add(wallSize.set("WallSize", glm::vec2(500,330), glm::vec2(100,100), glm::vec2(1000,1000)));
+    parameters.add(offset.set("Offset", glm::vec2(0, 0), glm::vec2(-10, -10), glm::vec2(10, 10)));
     parameters.add(moduleSize.set("Module Size", 7, 1, 20));
     parameters.add(bigModuleProbability.set("Big Probability", 0.2, 0.001, .999));
     parameters.add(bigModuleOrientation.set("Big orient H - V", 0.5, .001, .999));
@@ -33,7 +35,10 @@ void ofApp::setup(){
         for(auto &wall : walls) wall.height = v.y;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    
+    eventListeners.push_back(offset.newListener([&](glm::vec2 &v){
+        for(auto &wall : walls) wall.offset = v;
+        for(auto &wall : walls) wall.computeNewWall();
+    }));
     eventListeners.push_back(moduleSize.newListener([&](float &f){
         for(auto &wall : walls) wall.moduleSize = f;
         for(auto &wall : walls) wall.computeNewWall();
@@ -67,6 +72,16 @@ void ofApp::setup(){
     
     eventListeners.push_back(button.newListener([&](){
         for(auto &wall : walls) wall.computeNewWall();
+    }));
+    
+    eventListeners.push_back(randomizeParams.newListener([&](){
+        bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
+        bigModuleOrientation = ofRandom(bigModuleOrientation.getMin(), bigModuleOrientation.getMax());
+        density = ofRandom(density.getMin(), density.getMax());
+        bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
+        bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
+        bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
+        bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
     }));
     
     
