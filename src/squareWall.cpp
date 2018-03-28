@@ -27,22 +27,27 @@ void squareWall::draw(int x, int y){
     ofTranslate(x, y);
     ofScale(1, 1);
     ofSetColor(255);
+    ofNoFill();
+    ofSetLineWidth(2);
     ofDrawRectangle(0, 0, width, height);
+    ofFill();
+    ofEnableBlendMode(OF_BLENDMODE_ADD);
     if(probabilityMap.isAllocated() && drawProbMap){
-        ofSetColor(255, 127, 127, 127);
+        ofSetColor(255, 127, 127, 255);
         probabilityMap.draw(0,0, width, height);
     }
     if(bigProbabilityMap.isAllocated() && drawBigProbMap){
-        ofSetColor(127, 127, 255, 127);
+        ofSetColor(127, 127, 255, 255);
         bigProbabilityMap.draw(0,0, width, height);
     }
+    ofDisableBlendMode();
     ofPopMatrix();
     for(int i = 0; i < modules.size(); i++){
         ofPushMatrix();
         ofTranslate(modules[i].x + x, modules[i].y + y);
         ofScale(1, 1);
 //        ofSetColor(colors[i]);
-        ofSetColor(0);
+        ofSetColor(255);
         ofDrawRectangle(0, 0, modules[i].width, modules[i].height);
         ofPopMatrix();
     }
@@ -50,8 +55,8 @@ void squareWall::draw(int x, int y){
 }
 
 void squareWall::createRectangle(){
-    float margin = moduleSize + spacing;
-    float gridSize = moduleSize + spacing;
+    float margin = moduleSize * 2;
+    float gridSize = moduleSize * 2;
     int i = 0;
     int j = 0;
     for(float x = moduleSize; x < width-margin; x = x+gridSize){
@@ -154,7 +159,7 @@ bool squareWall::checkCanBeRecatngle(ofRectangle rect){
         return false;
     }
     ofRectangle possibleModuleWithMargins;
-    possibleModuleWithMargins.setFromCenter(rect.getCenter().x, rect.getCenter().y, rect.width+(spacing*2), rect.height+(spacing*2));
+    possibleModuleWithMargins.setFromCenter(rect.getCenter().x, rect.getCenter().y, rect.width+(moduleSize*2), rect.height+(moduleSize*2));
     for(auto module : modules){
         if(module.intersects(rect)){
             return false;
