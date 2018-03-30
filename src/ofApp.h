@@ -34,7 +34,9 @@ class ofApp : public ofBaseApp{
     ofParameter<float>  density;
     ofParameter<float>  borderAlign;
     ofParameter<bool>   applyProbMap;
+    ofParameter<float>  probabilityMapStrength;
     ofParameter<bool>   applyBigProbMap;
+    ofParameter<float>  probabilityBigMapStrength;
     ofParameter<bool>   drawProbMap;
     ofParameter<bool>   drawBigProbMap;
     ofParameter<void>   button;

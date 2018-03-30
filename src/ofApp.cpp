@@ -16,7 +16,9 @@ void ofApp::setup(){
     parameters.add(bigModuleOrientation.set("Big orient H - V", 0.5, .001, .999));
     parameters.add(density.set("Density", 0.5, 0, 1));
     parameters.add(applyProbMap.set("Apply Prob Map", true));
+    parameters.add(probabilityMapStrength.set("Prob.Map Strength",1.0,0.0,1.0));
     parameters.add(applyBigProbMap.set("Apply Big Prob Map", true));
+    parameters.add(probabilityBigMapStrength.set("Prob.Map.Big Str.",1.0,0.0,1.0));
     parameters.add(drawProbMap.set("Draw Prob Map", false));
     parameters.add(drawBigProbMap.set("Draw Big Prob Map", false));
     parameters.add(button.set("New layout (space)"));
@@ -73,7 +75,19 @@ void ofApp::setup(){
     eventListeners.push_back(button.newListener([&](){
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    
+
+    eventListeners.push_back(probabilityMapStrength.newListener([&](float &f){
+        for(auto &wall : walls) wall.probabilityMapStrength = f;
+        for(auto &wall : walls) wall.computeNewWall();
+    }));
+
+    eventListeners.push_back(probabilityBigMapStrength.newListener([&](float &f){
+        for(auto &wall : walls) wall.probabilityBigMapStrength = f;
+        for(auto &wall : walls) wall.computeNewWall();
+    }));
+
+
+
     eventListeners.push_back(randomizeParams.newListener([&](){
         bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
         bigModuleOrientation = ofRandom(bigModuleOrientation.getMin(), bigModuleOrientation.getMax());

@@ -11,6 +11,9 @@
 
 squareWall::squareWall(int _width, int _height) : width(_width), height(_height){
     font.load(OF_TTF_SANS, 10, true, true, true, true);
+    probabilityMapStrength=1.0;
+    probabilityBigMapStrength=1.0;
+
 }
 
 void squareWall::computeNewWall(){
@@ -23,6 +26,7 @@ void squareWall::computeNewWall(){
 
 void squareWall::draw(ofRectangle drawRect){
     int margin = 20;
+    
     ofPushStyle();
     ofPushMatrix();
     ofTranslate(margin + drawRect.x, margin + drawRect.y);
@@ -74,7 +78,7 @@ void squareWall::createRectangle(){
                 int textureX = ((float)(x+(moduleSize/2)) / (float)width) * bigProbabilityMap.getWidth();
                 int textureY = ((float)(y+(moduleSize/2)) / (float)height) * bigProbabilityMap.getHeight();
                 float itemBigProb = ofClamp(bigProbabilityMap.getColor(textureX, textureY).getBrightness()/255, 0.001, 0.999);
-                randomizeSizeAndOrientation(itemBigProb * bigModuleProbability, bigModuleOrientation);
+                randomizeSizeAndOrientation(itemBigProb * bigModuleProbability + (1.0-probabilityBigMapStrength), bigModuleOrientation);
             }else{
                 randomizeSizeAndOrientation(bigModuleProbability, bigModuleOrientation);
             }
@@ -95,7 +99,7 @@ void squareWall::createRectangle(){
                 if(probabilityMap.isAllocated() && applyProbMap){
                     int textureX = ((float)possibleModule.getCenter().x / (float)width) * probabilityMap.getWidth();
                     int textureY = ((float)possibleModule.getCenter().y / (float)height) * probabilityMap.getHeight();
-                    if(ofRandom(1) < density*(probabilityMap.getColor(textureX, textureY).getBrightness()/255)){
+                    if(ofRandom(1) < (density*(probabilityMap.getColor(textureX, textureY).getBrightness()/255))+(1.0-probabilityMapStrength)){
                         modules.push_back(possibleModule);
                     }
                 }else{
@@ -108,6 +112,7 @@ void squareWall::createRectangle(){
         }
         i++;
     }
+
 }
 
 void squareWall::save(string filename){

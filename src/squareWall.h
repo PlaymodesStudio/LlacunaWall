@@ -49,7 +49,9 @@ public:
     
     ofImage probabilityMap;
     ofImage bigProbabilityMap;
-    
+    float   probabilityMapStrength;
+    float   probabilityBigMapStrength;
+
     vector<glm::vec2> orderedOrientations;
     vector<int> orderedSizes;
 
