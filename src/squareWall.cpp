@@ -121,9 +121,18 @@ void squareWall::save(string filename){
         file.create(filename);
     }
     eps.beginEPS(filename, 0, 0, width, height);
+
+    eps.noFill();
+    eps.beginShape();
+        eps.rect(0, 0, width, height);
+    eps.endShape();
+    eps.fill();
+
+    eps.beginShape();
     for(auto module : modules){
         eps.rect(module.x, module.y, module.width, module.height);
     }
+    eps.endShape();
     
     int modulesSize1 = 0;
     int modulesSize3 = 0;
@@ -131,25 +140,25 @@ void squareWall::save(string filename){
     for (auto module : modules) {
         int m_widht = module.getWidth();
         int m_height = module.getHeight();
-        if(m_widht == moduleSize || m_height == moduleSize) modulesSize1++;
+        if(m_widht == moduleSize && m_height == moduleSize) modulesSize1++;
         if(m_widht == 3*moduleSize || m_height == 3*moduleSize) modulesSize3++;
         if(m_widht == 5*moduleSize || m_height == 5*moduleSize) modulesSize5++;
     }
     
-    eps.beginShape();
-    vector<ofPath> paths = font.getStringAsPoints("Total-> " + ofToString(modules.size()) + "  -  Size 1-> " + ofToString(modulesSize1) +"  -  Size 3-> " + ofToString(modulesSize3) + "   -   Size 5-> " + ofToString(modulesSize5));
+    
+    vector<ofPath> paths = font.getStringAsPoints("Total " + ofToString(modules.size()) + " | #1 " + ofToString(modulesSize1) +"  | #3 " + ofToString(modulesSize3) + "  | #5 " + ofToString(modulesSize5));
     for(auto &pathh : paths){
         eps.beginShape();
         for(auto &vertex : pathh.getCommands()){
             if(vertex.type == ofPath::Command::close){
-                eps.polyVertex(pathh.getCommands()[0].to.x + 15, pathh.getCommands()[0].to.y + 15);
+                eps.polyVertex(pathh.getCommands()[0].to.x + 15, pathh.getCommands()[0].to.y + 0);
             }else{
-                eps.polyVertex(vertex.to.x + 15, vertex.to.y + 15);
+                eps.polyVertex(vertex.to.x + 15, vertex.to.y + 0);
             }
         }
         eps.endShape();
     }
-    
+
     eps.endEPS();
 }
 
