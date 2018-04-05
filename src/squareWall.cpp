@@ -77,7 +77,7 @@ void squareWall::createRectangle(){
             if(bigProbabilityMap.isAllocated() && applyBigProbMap){
                 int textureX = ((float)(x+(moduleSize/2)) / (float)width) * bigProbabilityMap.getWidth();
                 int textureY = ((float)(y+(moduleSize/2)) / (float)height) * bigProbabilityMap.getHeight();
-                float itemBigProb = ofClamp(bigProbabilityMap.getColor(textureX, textureY).getBrightness()/255, 0.001, 0.999);
+                float itemBigProb = bigProbabilityMap.getColor(textureX, textureY).getBrightness()/255;
                 randomizeSizeAndOrientation(itemBigProb * bigModuleProbability + (1.0-probabilityBigMapStrength), bigModuleOrientation);
             }else{
                 randomizeSizeAndOrientation(bigModuleProbability, bigModuleOrientation);
@@ -189,6 +189,8 @@ bool squareWall::checkCanBeRecatngle(ofRectangle rect){
 }
 
 void squareWall::randomizeSizeAndOrientation(float bigProbability, float orientationParam){
+    bigProbability = ofClamp(bigProbability, 0, 1);
+    orientationParam = ofClamp(bigProbability, 0, 1);
     orderedOrientations.clear();
     vector<glm::vec2> orientations{glm::vec2(1, 0), glm::vec2(0, 1), glm::vec2(-1, 0), glm::vec2(0, -1)};
     vector<bool> selectedOrientations{0,0,0,0};
@@ -196,27 +198,28 @@ void squareWall::randomizeSizeAndOrientation(float bigProbability, float orienta
     discrete_distribution<float> orderDist(weights.begin(), weights.end());
     std::mt19937 gen;
     gen.seed(ofGetElapsedTimeMicros());
-    while(orientations.size() != orderedOrientations.size()){
+    while(std::accumulate(weights.begin(), weights.end(), 0.0) != 0){
         int chooseIndex = orderDist(gen);
-        if(selectedOrientations[chooseIndex] == 0){
-            glm::vec2 &choosenOrient = orientations[chooseIndex];
-            selectedOrientations[chooseIndex] = 1;
-            orderedOrientations.push_back(choosenOrient);
-        }
+        glm::vec2 &choosenOrient = orientations[chooseIndex];
+        selectedOrientations[chooseIndex] = 1;
+        orderedOrientations.push_back(choosenOrient);
+        weights.erase(weights.begin() + chooseIndex);
+        orientations.erase(orientations.begin() + chooseIndex);
+        orderDist = discrete_distribution<float>(weights.begin(), weights.end());
     }
     
     orderedSizes.clear();
     vector<int> sizes{1, 3, 5};
-     vector<bool> selectedSizes{0,0,0,0};
-    vector<float> sizeWigths{1-bigProbability, bigProbability/2, bigProbability/2};
-    discrete_distribution<float> sizesDist(sizeWigths.begin(), sizeWigths.end());
-    vector<float> sizesWeights{bigModuleOrientation, 1-bigModuleOrientation, bigModuleOrientation, 1-bigModuleOrientation};
-    while(sizes.size() != orderedSizes.size()){
+    vector<bool> selectedSizes{0,0,0,0};
+    vector<float> sizesWeights{1-bigProbability, bigProbability/2, bigProbability/2};
+    discrete_distribution<float> sizesDist(sizesWeights.begin(), sizesWeights.end());
+    while(std::accumulate(sizesWeights.begin(), sizesWeights.end(), 0.0) != 0){
         int chooseIndex = sizesDist(gen);
-        if(selectedSizes[chooseIndex] == 0){
-            int choosenSize = sizes[chooseIndex];
-            selectedSizes[chooseIndex] = 1;
-            orderedSizes.push_back(choosenSize);
-        }
+        int choosenSize = sizes[chooseIndex];
+        selectedSizes[chooseIndex] = 1;
+        orderedSizes.push_back(choosenSize);
+        sizesWeights.erase(sizesWeights.begin() + chooseIndex);
+        sizes.erase(sizes.begin() + chooseIndex);
+        sizesDist = discrete_distribution<float>(sizesWeights.begin(), sizesWeights.end());
     }
 }

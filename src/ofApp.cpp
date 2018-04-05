@@ -12,8 +12,8 @@ void ofApp::setup(){
     parameters.add(wallSize.set("WallSize", glm::vec2(500,330), glm::vec2(100,100), glm::vec2(1000,1000)));
     parameters.add(offset.set("Offset", glm::vec2(0, 0), glm::vec2(-10, -10), glm::vec2(10, 10)));
     parameters.add(moduleSize.set("Module Size", 7, 1, 20));
-    parameters.add(bigModuleProbability.set("Big Probability", 0.2, 0.001, .999));
-    parameters.add(bigModuleOrientation.set("Big orient H - V", 0.5, .001, .999));
+    parameters.add(bigModuleProbability.set("Big Probability", 0.2, 0, 1));
+    parameters.add(bigModuleOrientation.set("Big orient H - V", 0.5, 0, 1));
     parameters.add(density.set("Density", 0.5, 0, 1));
     parameters.add(applyProbMap.set("Apply Prob Map", true));
     parameters.add(probabilityMapStrength.set("Prob.Map Strength",1.0,0.0,1.0));
