@@ -190,7 +190,7 @@ bool squareWall::checkCanBeRecatngle(ofRectangle rect){
 
 void squareWall::randomizeSizeAndOrientation(float bigProbability, float orientationParam){
     bigProbability = ofClamp(bigProbability, 0, 1);
-    orientationParam = ofClamp(bigProbability, 0, 1);
+    orientationParam = ofClamp(orientationParam, 0, 1);
     orderedOrientations.clear();
     vector<glm::vec2> orientations{glm::vec2(1, 0), glm::vec2(0, 1), glm::vec2(-1, 0), glm::vec2(0, -1)};
     vector<bool> selectedOrientations{0,0,0,0};
