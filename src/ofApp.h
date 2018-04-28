@@ -46,7 +46,7 @@ class ofApp : public ofBaseApp{
     ofParameter<string> probabilityMapString;
     ofParameter<string> bigProbabilityMapString;
     
-    vector<ofEventListener> eventListeners;
+    ofEventListeners eventListeners;
     
     vector<squareWall> walls;
 };

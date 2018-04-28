@@ -32,63 +32,63 @@ void ofApp::setup(){
     for(auto &wall : walls) wall.applyBigProbMap = applyBigProbMap;
 
     
-    eventListeners.push_back(wallSize.newListener([&](glm::vec2 &v){
+    eventListeners.push(wallSize.newListener([&](glm::vec2 &v){
         for(auto &wall : walls) wall.width = v.x;
         for(auto &wall : walls) wall.height = v.y;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(offset.newListener([&](glm::vec2 &v){
+    eventListeners.push(offset.newListener([&](glm::vec2 &v){
         for(auto &wall : walls) wall.offset = v;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(moduleSize.newListener([&](float &f){
+    eventListeners.push(moduleSize.newListener([&](float &f){
         for(auto &wall : walls) wall.moduleSize = f;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(bigModuleProbability.newListener([&](float &f){
+    eventListeners.push(bigModuleProbability.newListener([&](float &f){
         for(auto &wall : walls) wall.bigModuleProbability = f;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(bigModuleOrientation.newListener([&](float &f){
+    eventListeners.push(bigModuleOrientation.newListener([&](float &f){
         for(auto &wall : walls) wall.bigModuleOrientation = f;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(density.newListener([&](float &f){
+    eventListeners.push(density.newListener([&](float &f){
         for(auto &wall : walls) wall.density = f;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(applyProbMap.newListener([&](bool &b){
+    eventListeners.push(applyProbMap.newListener([&](bool &b){
         for(auto &wall : walls) wall.applyProbMap = b;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(applyBigProbMap.newListener([&](bool &b){
+    eventListeners.push(applyBigProbMap.newListener([&](bool &b){
         for(auto &wall : walls) wall.applyBigProbMap = b;
         for(auto &wall : walls) wall.computeNewWall();
     }));
-    eventListeners.push_back(drawProbMap.newListener([&](bool &b){
+    eventListeners.push(drawProbMap.newListener([&](bool &b){
         for(auto &wall : walls) wall.drawProbMap = b;
     }));
-    eventListeners.push_back(drawBigProbMap.newListener([&](bool &b){
+    eventListeners.push(drawBigProbMap.newListener([&](bool &b){
         for(auto &wall : walls) wall.drawBigProbMap = b;
     }));
     
-    eventListeners.push_back(button.newListener([&](){
+    eventListeners.push(button.newListener([&](){
         for(auto &wall : walls) wall.computeNewWall();
     }));
 
-    eventListeners.push_back(probabilityMapStrength.newListener([&](float &f){
+    eventListeners.push(probabilityMapStrength.newListener([&](float &f){
         for(auto &wall : walls) wall.probabilityMapStrength = f;
         for(auto &wall : walls) wall.computeNewWall();
     }));
 
-    eventListeners.push_back(probabilityBigMapStrength.newListener([&](float &f){
+    eventListeners.push(probabilityBigMapStrength.newListener([&](float &f){
         for(auto &wall : walls) wall.probabilityBigMapStrength = f;
         for(auto &wall : walls) wall.computeNewWall();
     }));
 
 
 
-    eventListeners.push_back(randomizeParams.newListener([&](){
+    eventListeners.push(randomizeParams.newListener([&](){
         bigModuleProbability = ofRandom(bigModuleProbability.getMin(), bigModuleProbability.getMax());
         bigModuleOrientation = ofRandom(bigModuleOrientation.getMin(), bigModuleOrientation.getMax());
         density = ofRandom(density.getMin(), density.getMax());
